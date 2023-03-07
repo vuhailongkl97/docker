@@ -14,15 +14,12 @@ RUN git clone https://github.com/vuhailongkl97/dotfiles
 RUN sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 RUN rm /root/.zshrc
 
-# Need restow here
-RUN cd dotfiles && stow -R --adopt .
-
 # Install VimPlug
 RUN sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
 # Install nvim
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | zsh 
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 RUN . ~/.bashrc && nvm install node
 RUN apt install pip locales -y
 RUN pip install pynvim --upgrade
@@ -57,5 +54,9 @@ RUN sed -i '/^source \//d' ~/.zshrc
 # Setup zsh as default bash for tmux
 RUN echo 'set-option -g default-shell /usr/bin/zsh' >> ~/.tmux.conf
 
+# Need restow here
+RUN rm .zshrc .tmux.conf
+RUN cd dotfiles && stow -R --adopt .
+
 # Set the entrypoint to a bash shell
-ENTRYPOINT ["/bin/zsh"]
+ENTRYPOINT ["/bin/bash"]
