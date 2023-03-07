@@ -57,6 +57,7 @@ RUN echo 'set-option -g default-shell /usr/bin/zsh' >> ~/.tmux.conf
 # Need restow here
 RUN rm .zshrc .tmux.conf
 RUN cd dotfiles && stow -R --adopt .
+RUN nvim --headless +'PlugInstall --sync' +qa
 
 # Set the entrypoint to a bash shell
 ENTRYPOINT ["/bin/bash"]
