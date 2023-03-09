@@ -1,5 +1,9 @@
 FROM ubuntu:latest
 
+ARG TIMEZONE=Asia/Ho_Chi_Minh
+ENV TZ=$TIMEZONE
+ENV DEBIAN_FRONTEND noninteractive
+
 # Install updates and some basic packages
 RUN apt-get update && \
     apt-get upgrade -y && \
