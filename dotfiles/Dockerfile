@@ -59,5 +59,12 @@ RUN rm .zshrc .tmux.conf
 RUN cd dotfiles && stow -R --adopt .
 RUN nvim --headless +'PlugInstall --sync' +qa
 
+# Install lazygit
+RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*'); curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+RUN tar xf lazygit.tar.gz lazygit
+RUN mv lazygit /usr/bin/lg
+
+RUN apt install universal-ctags ripgrep -y
+
 # Set the entrypoint to a bash shell
 ENTRYPOINT ["/bin/bash"]
