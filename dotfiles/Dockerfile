@@ -43,30 +43,28 @@ RUN ./squashfs-root/AppRun --version
 RUN mv squashfs-root /
 RUN ln -s /squashfs-root/AppRun /usr/bin/nvim
 
-
 # custome zsh
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
-RUN echo "source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
 #RUN nvim +PlugInstall +qall
 # for c/c++ dev
 RUN apt install ccls clang-format -y
 
+# Need restow here
+RUN cd dotfiles && stow -R --adopt .
+
 # Remove zsh-syntax-highlighting.zsh isn't suitable for this
 RUN sed -i '/^source \//d' ~/.zshrc
+RUN echo "source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
 
 # Setup zsh as default bash for tmux
 RUN echo 'set-option -g default-shell /usr/bin/zsh' >> ~/.tmux.conf
 
-# Need restow here
-RUN rm .zshrc .tmux.conf
-RUN cd dotfiles && stow -R --adopt .
 RUN nvim --headless +'PlugInstall --sync' +qa
 
 # Install lazygit
 RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*'); curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-RUN tar xf lazygit.tar.gz lazygit
-RUN mv lazygit /usr/bin/lg
+RUN tar xf lazygit.tar.gz lazygit; mv lazygit /usr/bin/lazygit; rm lazygit.tar.gz
 
 RUN apt install universal-ctags ripgrep -y
 
