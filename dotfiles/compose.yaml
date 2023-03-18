@@ -1,0 +1,7 @@
+version : '3.9'
+services:
+  app:
+    build: .
+    volumes:
+      - /home/long/working:/working
+      - /home/long/.ssh:/root/.ssh
